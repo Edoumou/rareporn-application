@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import ICO from "./contracts/ICO.json";
+import getICOContract from './getICOContract';
+import Formate from './utils/Formate';
 import getWeb3 from "./getWeb3";
 
 import "./App.css";
 
 class App extends Component {
   state = {
-    storageValue: 0,
     web3: null,
-    accounts: null,
+    account: null,
     contract: null,
     name: '',
     symbol: '',
@@ -17,24 +17,20 @@ class App extends Component {
 
   componentDidMount = async () => {
     try {
-      // Get network provider and web3 instance.
+      // connect to web3 and get contract instances
       const web3 = await getWeb3();
-
-      // Use web3 to get the user's accounts.
+      const contract = await getICOContract(web3);
       const accounts = await web3.eth.getAccounts();
 
-      // Get the contract instance.
-      const networkId = await web3.eth.net.getId();
-      const deployedNetwork = ICO.networks[networkId];
-      const instance = new web3.eth.Contract(
-        ICO.abi,
-        deployedNetwork && deployedNetwork.address,
+      // Update states
+      this.setState(
+        {
+          web3,
+          contract,
+          account: accounts[0]
+        },
+        this.start
       );
-
-
-      // Set web3, accounts, and contract to the state, and then proceed with an
-      // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance }, this.runExample);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -42,26 +38,37 @@ class App extends Component {
       );
       console.error(error);
     }
-  };
+  }
 
-  runExample = async () => {
-    const { contract } = this.state;
+  start = async () => {
+    const { web3, contract } = this.state;
 
-    // Stores a given value, 5 by default.
-    //await contract.methods.set(5).send({ from: accounts[0] });
+    // update account in state with the current account,
+    // this allows to display automatically the current 
+    // account when the user changes the account. 
+    this.getAccount();
 
-    // Get the value from the contract to prove it worked.
-    //const response = await contract.methods.get().call();
+    // convert the total supply from wei to eth
+    let totalSupply = await contract.methods.totalSupply().call();
+    totalSupply = web3.utils.fromWei(totalSupply.toString());
 
-    // Update state with the result.
-    //this.setState({ storageValue: response });
-
+    // update states
     this.setState({
-      totalSupply: await contract.methods.totalSupply().call(),
+      totalSupply: Formate(totalSupply),
       name: await contract.methods.name().call(),
       symbol: await contract.methods.symbol().call()
-    })
-  };
+    });
+  }
+
+  getAccount = async () => {
+    if (this.state.web3 !== null || this.state.web3 !== undefined) {
+      await window.ethereum.on('accountsChanged', (accounts) => {
+        this.setState({
+          account: accounts[0]
+        });
+      });
+    }
+  }
 
   render() {
     if (!this.state.web3) {
@@ -69,10 +76,11 @@ class App extends Component {
     }
     return (
       <div className="App">
-        <h1>Good to Go!</h1>
+        <h1>New ICO for {this.state.symbol} token!</h1>
         <p>Name: {this.state.name}</p>
-        <p>Symbol: {this.state.symbol}</p>
-        <p>Total Supply: {this.state.totalSupply}</p>
+        <p>
+          Total Supply: <strong>{this.state.totalSupply} {this.state.symbol}</strong>
+        </p>
       </div>
     );
   }

@@ -7,7 +7,7 @@ import "./ERC20/Owned.sol";
 contract ICO is ERC20("Rare Platform Token", "RPT"), Owned {
     ERC20 public token;
 
-    uint256 private totalSupply_ = 5000 ether;
+    uint256 private initialSupply = 500000 ether; // 1 eth = 10^(18) => decimals = 18
     uint256 public rateOfChange = 1000;
     uint256 public raisedAmount;
     uint256 private minInvestment;
@@ -15,7 +15,7 @@ contract ICO is ERC20("Rare Platform Token", "RPT"), Owned {
     uint256 public nbOfInvestors;
     address payable private depositETHAddress;
 
-    mapping(address => bool) investors;
+    mapping(uint256 => address) public investors;
 
     event State(address _address);
 
@@ -23,9 +23,65 @@ contract ICO is ERC20("Rare Platform Token", "RPT"), Owned {
         token = new ERC20("Rare Platform Token", "RPT");
 
         depositETHAddress = _depositETHAddress;
-        mint(msg.sender, totalSupply_);
+        mint(msg.sender, initialSupply);
 
         minInvestment = 0.01 ether;
         maxInvestment = 10 ether;
+    }
+
+    function buyToken() public payable {
+        // get the owner address (the one used to deploy the contract)
+        address ownerAddress = owner;
+
+        // prevent the contract address to buy tokens
+        require(
+            msg.sender != ownerAddress,
+            "ICO: buy token with contract address"
+        );
+
+        // require enough eth to buy tokens
+        require(
+            msg.value > 0 && msg.value < msg.sender.balance,
+            "ICO: not enough eth"
+        );
+
+        // prevent buying tokens after all tokens have been sold out.
+        require(raisedAmount + msg.value <= initialSupply, "ICO is over");
+
+        // the amount to invest must be in range [minInvestment, maxInvestment]
+        require(
+            msg.value >= minInvestment && msg.value <= maxInvestment,
+            "ICO: change amount"
+        );
+
+        // update state variables before calling external function (security).
+        // Register the user only if buying the first time
+        raisedAmount = add(raisedAmount, msg.value);
+
+        if (
+            investors[nbOfInvestors] !=
+            address(0x0000000000000000000000000000000000000000)
+        ) {
+            investors[nbOfInvestors] = msg.sender;
+            nbOfInvestors++;
+        }
+
+        // amount of tokens to buy
+        uint256 tokens = mul(msg.value, rateOfChange);
+
+        // send eth to the deposit account of the contract owner,
+        // not to the contract address
+        depositETHAddress.transfer(msg.value);
+
+        // transfer tokens to the buyer
+        transfer(msg.sender, tokens);
+    }
+
+    receive() external payable {
+        emit State(msg.sender);
+    }
+
+    fallback() external payable {
+        buyToken();
     }
 }

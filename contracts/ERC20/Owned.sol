@@ -2,7 +2,7 @@
 pragma solidity 0.8.4;
 
 abstract contract Owned {
-    address public owner = msg.sender;
+    address internal owner = msg.sender;
 
     event NewOwner(address indexed oldOwner, address indexed newOwner);
 

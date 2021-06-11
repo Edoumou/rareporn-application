@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import getICOContract from './getICOContract';
 import Formate from './utils/Formate';
 import getWeb3 from "./getWeb3";
+import Ico from "./components/ERC20/Ico";
 
+import 'semantic-ui-css/semantic.min.css'
 import "./App.css";
 
 class App extends Component {
@@ -76,11 +78,7 @@ class App extends Component {
     }
     return (
       <div className="App">
-        <h1>New ICO for {this.state.symbol} token!</h1>
-        <p>Name: {this.state.name}</p>
-        <p>
-          Total Supply: <strong>{this.state.totalSupply} {this.state.symbol}</strong>
-        </p>
+        <Ico />
       </div>
     );
   }

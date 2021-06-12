@@ -29,7 +29,8 @@
 
 .home {
   color: white;
-  height: 120vh;
+
+  height: 100%;
   line-height: 2em;
   background-image: linear-gradient(
       to right bottom,

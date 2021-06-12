@@ -2011,7 +2011,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-06-11T02:40:39.683Z",
+  "updatedAt": "2021-06-12T14:12:08.490Z",
   "devdoc": {
     "details": "Interface of the ERC20 standard This interface contract defines fuctions and events required to meet the ERC20 standard.",
     "events": {

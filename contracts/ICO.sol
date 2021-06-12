@@ -12,10 +12,10 @@ contract ICO is ERC20("Rare Platform Token", "RPT"), Owned {
     uint256 public raisedAmount;
     uint256 private minInvestment;
     uint256 private maxInvestment;
-    uint256 public nbOfInvestors;
-    address payable private depositETHAddress;
+    address[] listOfInvestors;
+    address payable public depositETHAddress;
 
-    mapping(uint256 => address) public investors;
+    mapping(address => bool) public investors;
 
     event State(address _address);
 
@@ -41,7 +41,7 @@ contract ICO is ERC20("Rare Platform Token", "RPT"), Owned {
 
         // require enough eth to buy tokens
         require(
-            msg.value > 0 && msg.value < msg.sender.balance,
+            msg.value != 0 && msg.value < msg.sender.balance,
             "ICO: not enough eth"
         );
 
@@ -58,23 +58,20 @@ contract ICO is ERC20("Rare Platform Token", "RPT"), Owned {
         // Register the user only if buying the first time
         raisedAmount = add(raisedAmount, msg.value);
 
-        if (
-            investors[nbOfInvestors] !=
-            address(0x0000000000000000000000000000000000000000)
-        ) {
-            investors[nbOfInvestors] = msg.sender;
-            nbOfInvestors++;
+        if (!investors[msg.sender]) {
+            listOfInvestors.push(msg.sender);
+            investors[msg.sender] = true;
         }
 
         // amount of tokens to buy
-        uint256 tokens = mul(msg.value, rateOfChange);
+        uint256 tokens = msg.value * rateOfChange;
 
         // send eth to the deposit account of the contract owner,
         // not to the contract address
         depositETHAddress.transfer(msg.value);
 
         // transfer tokens to the buyer
-        transfer(msg.sender, tokens);
+        _transfer(ownerAddress, msg.sender, tokens);
     }
 
     receive() external payable {
@@ -83,5 +80,13 @@ contract ICO is ERC20("Rare Platform Token", "RPT"), Owned {
 
     fallback() external payable {
         buyToken();
+    }
+
+    function getListOfUsers() public view returns (address[] memory) {
+        return listOfInvestors;
+    }
+
+    function getOwnerAddress() public view returns (address) {
+        return owner;
     }
 }

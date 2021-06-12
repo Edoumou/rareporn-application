@@ -4,20 +4,6 @@
   box-sizing: border-box;
 }
 
-body {
-  color: white;
-  height: 100vh;
-  line-height: 2em;
-  background-image: linear-gradient(
-      to right bottom,
-      rgba(10, 37, 59, 0.95),
-      rgba(53, 74, 81, 0.95)
-    ),
-    url(./img/background.jpeg);
-  background-size: cover;
-  background-position: top;
-}
-
 .App {
   text-align: center;
 }
@@ -39,4 +25,36 @@ body {
 
 .App-link {
   color: #09d3ac;
+}
+
+.home {
+  color: white;
+  height: 120vh;
+  line-height: 2em;
+  background-image: linear-gradient(
+      to right bottom,
+      rgba(10, 37, 59, 0.95),
+      rgba(53, 74, 81, 0.95)
+    ),
+    url(./img/background.jpeg);
+  background-size: cover;
+  background-position: top;
+}
+
+.ico {
+  padding-top: 20px;
+}
+
+.token-grid {
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 50px;
+}
+
+.token-info {
+  padding-bottom: 30px;
+}
+
+.token-buy-input {
+  padding-top: 10px;
 }

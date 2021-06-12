@@ -51,7 +51,8 @@ contract ERC20 is IERC20, SafeMath {
         override
         returns (bool)
     {
-        return _transfer(msg.sender, _to, _tokens);
+        _transfer(msg.sender, _to, _tokens);
+        return true;
     }
 
     function approve(address _spender, uint256 _tokens)
@@ -80,14 +81,16 @@ contract ERC20 is IERC20, SafeMath {
         uint256 _allowance = allowances[_from][msg.sender];
         require(_allowance >= _tokens);
 
-        return _transfer(_from, _to, _tokens);
+        _transfer(_from, _to, _tokens);
+
+        return true;
     }
 
     function _transfer(
         address _from,
         address _to,
         uint256 _tokens
-    ) private returns (bool) {
+    ) internal virtual {
         require(_from != address(0), "ERC20: transfer from the zero address");
         require(_to != address(0), "ERC20: transfer to the zero address");
 
@@ -98,10 +101,8 @@ contract ERC20 is IERC20, SafeMath {
         );
 
         balances[_from] -= _tokens;
-        balances[_to] = add(balances[_to], _tokens);
+        balances[_to] += _tokens;
         emit Transfer(_from, _to, _tokens);
-
-        return true;
     }
 
     function mint(address _account, uint256 _tokens) internal virtual {

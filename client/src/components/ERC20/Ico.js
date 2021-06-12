@@ -88,6 +88,8 @@ class Ico extends Component {
         console.log("ETH Amount =", ethToSend);
         console.log("WEB3 =", this.props.web3.utils);
         console.log("RECEIPT =", receipt);
+
+        this.setState({ tokens: 0 });
     }
 
     render() {
@@ -120,6 +122,7 @@ class Ico extends Component {
                                     <Input labelPosition='right' type='text' placeholder='min: 10 - max: 10,000'>
                                         <Label basic>Amount</Label>
                                         <input
+                                            value={this.state.tokens}
                                             onChange={e => { this.setState({ tokens: e.target.value }) }}
                                         />
                                         <Label>{this.props.symbol}</Label>
@@ -151,23 +154,6 @@ class Ico extends Component {
                                         }
                                     </Table.Body>
                                 </Table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>

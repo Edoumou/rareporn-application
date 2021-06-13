@@ -65,7 +65,7 @@ class BuyNFT extends Component {
 
     onBuyButtonClick = async () => {
         // the NFT image costs 1 ETH
-        const imagePrice = this.props.web3.utils.toWei((1).toString());
+        const imagePrice = await this.props.web3.utils.toWei((1).toString());
 
         // Buy the NFT image
         await this.props.contractNFT.methods

@@ -18,7 +18,10 @@ class NftAuction extends Component {
         imageID: '',
         imageCID: '',
         imageCIDFromContract: '',
-        id: null
+        id: null,
+        highestBidder: '',
+        highestBindingBid: 0
+
     }
 
     handleFiles = async files => {
@@ -65,11 +68,16 @@ class NftAuction extends Component {
 
     onBidButtonClick = async () => {
         // the NFT image costs 1 ETH
-        const imagePrice = this.props.web3.utils.toWei((1).toString());
+        const imagePrice = await this.props.web3.utils.toWei((1).toString());
 
         // get the highest bidder and highest binding bid
-        let highestBidder = this.props.contractNFT.methods.highestBidder().call();
-        let highestBindingBid = this.props.contractNFT.methods.highestBindingBid().call();
+        let highestBidder = await this.props.contractNFT.methods.highestBidder().call();
+        let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
+
+        this.setState({
+            highestBidder,
+            highestBindingBid
+        })
 
         // Bid
         await this.props.contractNFT.methods
@@ -90,16 +98,20 @@ class NftAuction extends Component {
         // get data from the Blockchain
         let imageID = await this.props.contractNFT.methods
             .imageIDs(this.state.imageCID).call();
-        let imageCID = await this.props.contractNFT.methods.images(imageID).call();
-
+        const imageCID = await this.props.contractNFT.methods.images(imageID).call();
+        const highestBidder = await this.props.contractNFT.methods.highestBidder().call();
+        const highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
         const owner = await this.props.contractNFT.methods.ownerOf(imageID).call();
 
         // update state variables
-
+        console.log("highestBidder =", highestBidder);
+        console.log("highestBindingBid =", highestBindingBid);
         this.setState({
             imageID,
             imageCID,
             owner,
+            highestBidder,
+            highestBindingBid,
             imageFromIPFS: await FetchFromIPFS(imageCID)
         });
     }
@@ -109,8 +121,8 @@ class NftAuction extends Component {
             <div className="ico">
                 <div className="token-info">
                     <h1>Welcome to {this.props.imageSymbol} {this.props.imageName} Auction</h1>
-                    <h3>highest bidder: {this.props.numberOfMintedImages} </h3>
-                    <h3>highest binding bid: </h3>
+                    <h3>highest bidder: {this.state.highestBidder} </h3>
+                    <h3>highest binding bid: {this.state.highestBindingBid} </h3>
                 </div>
                 <hr></hr>
 

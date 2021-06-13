@@ -126,7 +126,7 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
         // Auction need to be cancelled or ended.
         // only the owner or a bidder can finalize the auction
         require(auctionState == State.Canceled || block.number > endBlock);
-        require(msg.sender == owner || bids[msg.sender] > 0);
+        require(msg.sender != owner && bids[msg.sender] > 0);
 
         address payable recipient;
         uint256 value;
@@ -139,27 +139,20 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
             recipient.transfer(value);
         } else {
             // if the owner makes the call, else if a bidder makes it.
-            if (msg.sender == owner) {
-                recipient = owner;
-                value = highestBindingBid;
+            if (msg.sender == highestBidder) {
+                recipient = highestBidder;
+                value = bids[highestBidder] - highestBindingBid;
+
+                // send the amount of ETH to the owner
+                owner.transfer(value);
+
+                // transfer the NFT image to the highestBidder
+                _safeTransfer(owner, recipient, _imageID, "Enjoy!");
+            } else {
+                recipient = payable(msg.sender);
+                value = bids[msg.sender];
 
                 recipient.transfer(value);
-            } else {
-                if (msg.sender == highestBidder) {
-                    recipient = highestBidder;
-                    value = bids[highestBidder] - highestBindingBid;
-
-                    // send the amount of ETH to the owner
-                    owner.transfer(value);
-
-                    // transfer the NFT image to the highestBidder
-                    _safeTransfer(owner, recipient, _imageID, "Enjoy!");
-                } else {
-                    recipient = payable(msg.sender);
-                    value = bids[msg.sender];
-
-                    recipient.transfer(value);
-                }
             }
         }
     }

@@ -21,8 +21,6 @@ class BuyNFT extends Component {
                 </div>
                 <hr></hr>
 
-
-
                 <div className='token-grid'>
                     <Grid columns={3} celled stackable textAlign='left'>
                         <Grid.Row>

@@ -60,12 +60,6 @@ class BuyNFT extends Component {
             owner,
             imageFromIPFS: await FetchFromIPFS(imageCID)
         });
-
-        console.log("image ID", this.state.imageID);
-        console.log("Image CID =", this.state.imageCID);
-        console.log("Image owner =", this.state.owner);
-        console.log("Image IPFS =", this.state.imageFromIPFS);
-
     }
 
     onBuyButtonClick = async () => {

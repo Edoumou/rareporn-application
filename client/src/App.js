@@ -38,7 +38,7 @@ class App extends Component {
 
       //== ERC721 token contract
       const contractNFT = await getNFTContract(web3);
-      console.log('NFT CONTRACT =', contractNFT);
+      console.log('NFT CONTRACT =', this.state.contractNFT);
 
       const accounts = await web3.eth.getAccounts();
 
@@ -57,14 +57,14 @@ class App extends Component {
       let balanceOfOwner = await contract.methods.balanceOf(owner).call();
       balanceOfOwner = await web3.utils.fromWei(balanceOfOwner.toString());
 
-      console.log("Balance of owner =", Formate(balanceOfOwner));
+      console.log("NFT Contract in Props =", this.state.contractNFT);
 
       // Update states
       this.setState(
         {
           web3,
           contract,
-          contractNFT,
+          contractNFT: contractNFT,
           owner,
           account: accounts[0],
           balanceRPT: Formate(tokens),
@@ -150,6 +150,7 @@ class App extends Component {
   }
 
   render() {
+    console.log("CONTRACT NFT in RENDER =", this.state.contractNFT);
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
@@ -167,6 +168,7 @@ class App extends Component {
           balanceRPT={this.state.balanceRPT}
           investors={this.state.investors}
           investorsBalance={this.state.investorsBalance}
+          contractNFT={this.state.contractNFT}
           imageName={this.state.imageName}
           imageSymbol={this.state.imageSymbol}
           numberOfMintedImages={this.state.numberOfMintedImages}

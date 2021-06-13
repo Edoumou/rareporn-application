@@ -4,7 +4,7 @@ import "../App.css";
 
 class Home extends Component {
     render() {
-        console.log(window.location.href);
+        console.log("CONTRACT NFT in Home =", this.props.contractNFT);
         return (
             <div className='home'>
                 <Header
@@ -19,6 +19,7 @@ class Home extends Component {
                     balanceRPT={this.props.balanceRPT}
                     investors={this.props.investors}
                     investorsBalance={this.props.investorsBalance}
+                    contractNFT={this.props.contractNFT}
                     imageName={this.props.imageName}
                     imageSymbol={this.props.imageSymbol}
                     numberOfMintedImages={this.props.numberOfMintedImages}

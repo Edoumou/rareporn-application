@@ -82,13 +82,6 @@ class Ico extends Component {
             investorsBalance
         });
 
-
-        console.log("Tokens =", this.state.tokens)
-        console.log("Rate of Change =", rateOfChange);
-        console.log("ETH Amount =", ethToSend);
-        console.log("WEB3 =", this.props.web3.utils);
-        console.log("RECEIPT =", receipt);
-
         this.setState({ tokens: 0 });
     }
 
@@ -137,7 +130,7 @@ class Ico extends Component {
                             </Grid.Column>
                             <Grid.Column textAlign='center' width={8}>
                                 <h2>List of investors</h2>
-
+                                <br></br>
                                 <Table celled>
                                     <Table.Header>
                                         <Table.Row>

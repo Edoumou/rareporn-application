@@ -68,6 +68,9 @@ class Header extends Component {
                         </Route>
                         <Route path='/buy-nft'>
                             <BuyNFT
+                                web3={this.props.web3}
+                                account={this.props.account}
+                                contractNFT={this.props.contractNFT}
                                 imageName={this.props.imageName}
                                 imageSymbol={this.props.imageSymbol}
                                 numberOfMintedImages={this.props.numberOfMintedImages}
@@ -75,6 +78,9 @@ class Header extends Component {
                         </Route>
                         <Route path='/nft-auction'>
                             <NftAuction
+                                web3={this.props.web3}
+                                contractNFT={this.props.contractNFT}
+                                account={this.props.account}
                                 imageName={this.props.imageName}
                                 imageSymbol={this.props.imageSymbol}
                                 numberOfMintedImages={this.props.numberOfMintedImages}

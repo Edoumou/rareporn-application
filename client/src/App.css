@@ -29,7 +29,7 @@
 
 .home {
   color: white;
-  height: 170vh;
+  height: 180vh;
   /*height: 180%*/
   line-height: 2em;
   background-image: linear-gradient(
@@ -59,4 +59,10 @@
 
 .token-buy-input {
   padding-top: 10px;
+}
+
+.img-center {
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
 }

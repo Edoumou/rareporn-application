@@ -7,10 +7,11 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
     uint256 public counter;
     string[] public images;
     mapping(string => bool) imageAlreadyMinted;
+    mapping(string => uint256) public imageIDs;
 
     constructor() {}
 
-    function createImage(string memory _imageCID) public returns (uint256) {
+    function createImage(string memory _imageCID) public {
         // cannot mint the same image twice.
         // IPFS will be used to store images returning a unique CID (image URI).
         // Since CIDs are based on the image content, same image will always
@@ -27,19 +28,19 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
         // store the information that the image has been minted
         imageAlreadyMinted[_imageCID] = true;
 
-        counter++;
+        // store the image ID of the image CID in a mapping
+        imageIDs[_imageCID] = newImageId;
 
-        // return the Id of the image
-        return newImageId;
+        counter++;
     }
 
-    function buyImage(uint256 _imageCID) public payable returns (address) {
+    function buyImage(uint256 _imageID) public payable returns (bool) {
         // ERC721 contract defines requires needed
         // Double checking would not be optimal since it cost gas
 
         // get the owner of the image
-        address owner = ownerOf(_imageCID);
-        require(msg.sender != owner, "ImageNFT: buy by the owner");
+        address owner = ownerOf(_imageID);
+        require(msg.sender != owner, "ImageNFT: buy by owner");
 
         // cash out ETH
         require(
@@ -49,9 +50,11 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
         payable(owner).transfer(msg.value);
 
         // transfer the token CID from the owner to the buyer
-        _safeTransfer(owner, msg.sender, _imageCID, "Enjoy the image");
+        // images cost 1 ETH
+        require(msg.value == 1 ether, "ImageNFT: pay 1 ETH");
+        _safeTransfer(owner, msg.sender, _imageID, "Enjoy!");
 
         // creturn the address of the new image's owner
-        return ownerOf(_imageCID);
+        return true;
     }
 }

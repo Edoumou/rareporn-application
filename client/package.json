@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@openzeppelin/contracts": "^4.1.0",
+    "ipfs-mini": "^1.1.5",
     "react": "16.11.0",
     "react-dom": "16.11.0",
     "react-router-dom": "^5.2.0",

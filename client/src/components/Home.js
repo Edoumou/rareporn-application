@@ -19,6 +19,9 @@ class Home extends Component {
                     balanceRPT={this.props.balanceRPT}
                     investors={this.props.investors}
                     investorsBalance={this.props.investorsBalance}
+                    imageName={this.props.imageName}
+                    imageSymbol={this.props.imageSymbol}
+                    numberOfMintedImages={this.props.numberOfMintedImages}
                 />
             </div>
         )

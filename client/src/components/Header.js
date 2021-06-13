@@ -67,10 +67,18 @@ class Header extends Component {
                             />
                         </Route>
                         <Route path='/buy-nft'>
-                            <BuyNFT />
+                            <BuyNFT
+                                imageName={this.props.imageName}
+                                imageSymbol={this.props.imageSymbol}
+                                numberOfMintedImages={this.props.numberOfMintedImages}
+                            />
                         </Route>
                         <Route path='/nft-auction'>
-                            <NftAuction />
+                            <NftAuction
+                                imageName={this.props.imageName}
+                                imageSymbol={this.props.imageSymbol}
+                                numberOfMintedImages={this.props.numberOfMintedImages}
+                            />
                         </Route>
                     </Switch>
                 </BrowserRouter>

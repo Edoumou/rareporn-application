@@ -3,7 +3,7 @@ pragma solidity 0.8.4;
 
 import "../client/node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract ImageNFT is ERC721("Rare Platform NFT", "RPNFT") {
+contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
     uint256 public counter;
     string[] public images;
     mapping(string => bool) imageAlreadyMinted;

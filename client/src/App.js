@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import getICOContract from './getICOContract';
+import getNFTContract from './getNFTContract';
 import Formate from './utils/Formate';
 import getWeb3 from "./getWeb3";
 import Home from "../src/components/Home";
@@ -12,24 +13,34 @@ class App extends Component {
     web3: null,
     account: null,
     contract: null,
+    contractNFT: null,
     name: '',
+    imageName: '',
     symbol: '',
+    imageSymbol: '',
     balanceETH: 0,
     balanceRPT: 0,
     totalSupply: 0,
     balanceOfowner: 0,
     investors: [],
-    investorsBalance: []
+    investorsBalance: [],
+    numberOfMintedImages: 0
   };
 
   componentDidMount = async () => {
     try {
       // connect to web3 and get contract instances
       const web3 = await getWeb3();
-      const contract = await getICOContract(web3);
-      const accounts = await web3.eth.getAccounts();
 
+      //== ERC20 token contract
+      const contract = await getICOContract(web3);
       console.log('CONTRACT =', contract);
+
+      //== ERC721 token contract
+      const contractNFT = await getNFTContract(web3);
+      console.log('NFT CONTRACT =', contractNFT);
+
+      const accounts = await web3.eth.getAccounts();
 
       // get eth balance and RPT balance of the user
       await web3.eth.getBalance(accounts[0], (err, balance) => {
@@ -53,6 +64,7 @@ class App extends Component {
         {
           web3,
           contract,
+          contractNFT,
           owner,
           account: accounts[0],
           balanceRPT: Formate(tokens),
@@ -70,13 +82,14 @@ class App extends Component {
   }
 
   start = async () => {
-    const { web3, contract } = this.state;
+    const { web3, contract, contractNFT } = this.state;
 
     // update account in state with the current account,
     // this allows to display automatically the current 
     // account when the user changes the account. 
     this.getAccount();
 
+    //==== ERC20 token
     // convert the total supply from wei to eth
     let totalSupply = await contract.methods.totalSupply().call();
     totalSupply = web3.utils.fromWei(totalSupply.toString());
@@ -95,6 +108,9 @@ class App extends Component {
       investorsBalance.push(Formate(balance));
     }
 
+    //==== ERC721 token
+
+
     // update states
     this.setState({
       totalSupply: Formate(totalSupply),
@@ -102,7 +118,11 @@ class App extends Component {
       name: await contract.methods.name().call(),
       symbol: await contract.methods.symbol().call(),
       investors: investors,
-      investorsBalance: investorsBalance
+      investorsBalance: investorsBalance,
+      imageName: await contractNFT.methods.name().call(),
+      imageSymbol: await contractNFT.methods.symbol().call(),
+      numberOfMintedImages: await contractNFT.methods.counter().call()
+
     });
 
     console.log("INVESTORS =", this.state.investors);
@@ -147,6 +167,9 @@ class App extends Component {
           balanceRPT={this.state.balanceRPT}
           investors={this.state.investors}
           investorsBalance={this.state.investorsBalance}
+          imageName={this.state.imageName}
+          imageSymbol={this.state.imageSymbol}
+          numberOfMintedImages={this.state.numberOfMintedImages}
         />
       </div>
     );

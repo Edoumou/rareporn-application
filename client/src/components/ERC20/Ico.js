@@ -102,7 +102,7 @@ class Ico extends Component {
                 </div>
                 <hr></hr>
                 <div className='token-grid'>
-                    <Grid columns={2} celled stackable textAlign='left'>
+                    <Grid columns={3} celled stackable textAlign='left'>
                         <Grid.Row>
                             <Grid.Column width={3}>
                                 <h2>Account details</h2>
@@ -117,6 +117,8 @@ class Ico extends Component {
                                 <h2>Buy tokens</h2>
                                 <br></br>
                                 Token price: <strong>0.001 ETH</strong>
+                                <br></br>
+                                min: 10 - max: 10000
                                 <br></br>
                                 <div className='token-buy-input'>
                                     <Input labelPosition='right' type='text' placeholder='min: 10 - max: 10,000'>

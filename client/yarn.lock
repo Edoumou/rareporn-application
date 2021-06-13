@@ -5532,6 +5532,13 @@
   "resolved" "https://registry.npmjs.org/ipaddr.js/-/ipaddr.js-1.9.0.tgz"
   "version" "1.9.0"
 
+"ipfs-mini@^1.1.5":
+  "integrity" "sha512-BzsoCa3V/gxN2eEHnyqggOdreAwnvbddj4jUvp6Q7jXuzXx9q5XakXe8mG8qV0bn4bMKdH/7BUDbiWBCEMuYBg=="
+  "resolved" "https://registry.npmjs.org/ipfs-mini/-/ipfs-mini-1.1.5.tgz"
+  "version" "1.1.5"
+  dependencies:
+    "xmlhttprequest" "^1.8.0"
+
 "is-absolute-url@^2.0.0":
   "integrity" "sha1-UFMN+4T8yap9vnhS6Do3uTufKqY="
   "resolved" "https://registry.npmjs.org/is-absolute-url/-/is-absolute-url-2.1.0.tgz"
@@ -11897,7 +11904,7 @@
   "resolved" "https://registry.npmjs.org/xmlchars/-/xmlchars-2.2.0.tgz"
   "version" "2.2.0"
 
-"xmlhttprequest@1.8.0":
+"xmlhttprequest@^1.8.0", "xmlhttprequest@1.8.0":
   "integrity" "sha1-Z/4HXFwk/vOfnWX197f+dRcZaPw="
   "resolved" "https://registry.npmjs.org/xmlhttprequest/-/xmlhttprequest-1.8.0.tgz"
   "version" "1.8.0"

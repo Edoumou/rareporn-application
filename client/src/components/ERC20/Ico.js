@@ -107,7 +107,7 @@ class Ico extends Component {
                             <Grid.Column width={3}>
                                 <h2>Account details</h2>
                                 <br></br>
-                                {this.props.account.slice(1, 10)}...
+                                {this.props.account.slice(0, 10)}...
                                 <br></br>
                                 {this.props.balanceETH} ETH
                                 <br></br>
@@ -140,7 +140,7 @@ class Ico extends Component {
                                     <Table.Header>
                                         <Table.Row>
                                             <Table.HeaderCell>Investor</Table.HeaderCell>
-                                            <Table.HeaderCell textAlign='right'>{this.props.symbol}</Table.HeaderCell>
+                                            <Table.HeaderCell textAlign='right'>{this.props.symbol} Balance</Table.HeaderCell>
                                         </Table.Row>
                                     </Table.Header>
                                     <Table.Body>

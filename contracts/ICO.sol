@@ -5,7 +5,7 @@ import "./ERC20/ERC20.sol";
 import "./ERC20/Owned.sol";
 
 contract ICO is ERC20("Rare Platform Token", "RPT"), Owned {
-    ERC20 public token;
+    //***ERC20 public token;
 
     uint256 private initialSupply = 500000 ether; // 1 eth = 10^(18) => decimals = 18
     uint256 public rateOfChange = 1000;
@@ -20,7 +20,7 @@ contract ICO is ERC20("Rare Platform Token", "RPT"), Owned {
     event State(address _address);
 
     constructor(address payable _depositETHAddress) {
-        token = new ERC20("Rare Platform Token", "RPT");
+        //***token = new ERC20("Rare Platform Token", "RPT");
 
         depositETHAddress = _depositETHAddress;
         mint(msg.sender, initialSupply);

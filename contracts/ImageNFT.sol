@@ -47,7 +47,7 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
         // Since CIDs are based on the image content, same image will always
         // return same CID.
         require(!imageAlreadyMinted[_imageCID], "image already minted");
-        uint256 newImageId = counter;
+        uint256 newImageId = counter++;
 
         // store the image URI on the Blockchain
         images.push(_imageCID);
@@ -61,6 +61,8 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
         // store the image ID of the image CID in a mapping
         imageIDs[_imageCID] = newImageId;
 
+        owner = payable(ownerOf(newImageId));
+
         counter++;
     }
 
@@ -71,7 +73,7 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
         // get the owner of the image. Always work with local variable
         // not state variable.
         address payable ownerAddress = payable(ownerOf(_imageID));
-        owner = ownerAddress;
+
         require(msg.sender != ownerAddress, "ImageNFT: buy by owner");
 
         // cash out ETH
@@ -79,12 +81,12 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
             msg.value != 0 && msg.value < msg.sender.balance,
             "ImageNFT: not enough eth"
         );
-        payable(owner).transfer(msg.value);
+        payable(ownerAddress).transfer(msg.value);
 
         // transfer the token CID from the owner to the buyer
         // images cost 1 ETH
         require(msg.value == 1 ether, "ImageNFT: pay 1 ETH");
-        _safeTransfer(owner, msg.sender, _imageID, "Enjoy!");
+        _safeTransfer(ownerAddress, msg.sender, _imageID, "Enjoy!");
 
         // creturn the address of the new image's owner
         return true;

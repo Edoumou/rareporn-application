@@ -100,20 +100,27 @@ class NftAuction extends Component {
 
         this.setState({ owner: newOwner });
 
-        console.log("imagePrice =", imagePrice);
-        console.log("New Owner =", newOwner);
-
     }
 
     componentDidMount = async () => {
         // get data from the Blockchain
-        let imageID = await this.props.contractNFT.methods
-            .imageIDs(this.state.imageCID).call();
-        const imageCID = await this.props.contractNFT.methods.images(imageID).call();
         let auctionState = await this.props.contractNFT.methods.auctionState().call();
         const highestBidder = await this.props.contractNFT.methods.highestBidder().call();
         const highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
-        const owner = await this.props.contractNFT.methods.ownerOf(imageID).call();
+
+        let imageID = await this.props.contractNFT.methods
+            .imageIDs(this.state.imageCID).call();
+
+        if (imageID > 0) {
+            const imageCID = await this.props.contractNFT.methods.images(imageID).call();
+            const owner = await this.props.contractNFT.methods.ownerOf(imageID).call();
+
+            this.setState({
+                imageCID,
+                owner,
+                imageFromIPFS: await FetchFromIPFS(imageCID)
+            })
+        }
 
         auctionState === '0' ?
             this.setState({ auctionState: 'Started' }) :
@@ -129,12 +136,23 @@ class NftAuction extends Component {
         console.log("auctionState =", this.state.auctionState);
         this.setState({
             imageID,
-            imageCID,
-            owner,
             highestBidder,
-            highestBindingBid,
-            imageFromIPFS: await FetchFromIPFS(imageCID)
+            highestBindingBid
         });
+    }
+
+    onAuctionEnded = async () => {
+        await this.props.contractNFT.methods.cancelAuction()
+            .send({ from: this.props.account });
+        let auctionState = await this.props.contractNFT.methods.auctionState().call();
+
+        auctionState === '0' ?
+            this.setState({ auctionState: 'Started' }) :
+            auctionState === '1' ?
+                this.setState({ auctionState: 'Running' }) :
+                auctionState === '2' ?
+                    this.setState({ auctionState: 'Ended' }) :
+                    this.setState({ auctionState: 'Canceled' });
     }
 
     render() {
@@ -148,7 +166,9 @@ class NftAuction extends Component {
                     </h3>
                     <h3>highest bidder: {this.state.highestBidder} </h3>
                     <h3>highest binding bid: {this.state.highestBindingBid} </h3>
-                    <Button color='red'>Cancel auction</Button>
+                    <Button color='red' onClick={this.onAuctionEnded}>
+                        Cancel auction
+                    </Button>
                 </div>
                 <hr></hr>
 
@@ -212,10 +232,17 @@ class NftAuction extends Component {
                             <Grid.Column textAlign='center' width={8}>
                                 <h2>NFT image</h2>
                                 <br></br>
-                                ID: <strong>{this.state.imageID}</strong>
-                                <br></br>
-                                owner: <strong>{this.state.owner}</strong>
-                                <br></br>
+
+                                {
+                                    this.state.imageID > 0 ?
+                                        <div>
+                                            ID: <strong>{this.state.imageID}</strong>
+                                            <br></br>
+                                    owner: <strong>{this.state.owner}</strong>
+                                            <br></br>
+                                        </div> :
+                                        console.log("no image minted")
+                                }
                                 {
                                     this.state.imageID !== '' ?
                                         <div className='img-center'>

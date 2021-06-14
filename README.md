@@ -75,7 +75,7 @@ module.exports = {
 };
 ```
 
-## Some results
+## Results
 
 I this section are displayed screenshots of the Daap to show how it works.
 

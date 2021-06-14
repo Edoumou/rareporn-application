@@ -51,7 +51,7 @@ class Ico extends Component {
         const rateOfChange = await this.props.contract.methods.rateOfChange().call();
         const ethToSend = this.props.web3.utils.toWei((this.state.tokens / rateOfChange).toString());
 
-        const receipt = await this.props.contract.methods.buyToken()
+        await this.props.contract.methods.buyToken()
             .send({ from: this.props.account, value: ethToSend });
 
         let tokens = await this.props.contract.methods.balanceOf(this.props.account).call();

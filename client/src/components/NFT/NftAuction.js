@@ -133,6 +133,17 @@ class NftAuction extends Component {
         // for the refund or to get the NFT image (winner)
         await this.props.contractNFT.methods.finalizeAuction()
             .send({ from: this.props.account });
+
+        // update the auction's state
+        let auctionState = await this.props.contractNFT.methods.auctionState().call();
+
+        auctionState === '0' ?
+            this.setState({ auctionState: 'Started' }) :
+            auctionState === '1' ?
+                this.setState({ auctionState: 'Running' }) :
+                auctionState === '2' ?
+                    this.setState({ auctionState: 'Ended' }) :
+                    this.setState({ auctionState: 'Canceled' });
     }
 
     render() {

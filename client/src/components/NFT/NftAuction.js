@@ -99,7 +99,7 @@ class NftAuction extends Component {
         // update the highest bidder and highest binding bid
         let highestBidder = await this.props.contractNFT.methods.highestBidder().call();
         let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
-        highestBindingBid = await this.props.web3.fromWei(highestBindingBid.toString());
+        highestBindingBid = await this.props.web3.utils.fromWei(highestBindingBid.toString());
 
         console.log("Highest Bidder =", highestBidder);
         console.log("Highest Binding bid =", highestBindingBid);

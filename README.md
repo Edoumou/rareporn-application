@@ -79,4 +79,6 @@ module.exports = {
 
 I this section are displayed screenshots of the Daap to show how it works.
 
+### displaying the minted image ready for sell
+
 ![alt text](https://github.com/Edoumou/rareporn-application/blob/main/client/src/img/scr1.png "screeshot")

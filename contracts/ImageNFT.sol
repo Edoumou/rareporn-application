@@ -118,6 +118,8 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
 
     function cancelAuction() public {
         require(msg.sender == owner, "Not Owner");
+        require(auctionState == State.Running);
+
         auctionState = State.Canceled;
     }
 

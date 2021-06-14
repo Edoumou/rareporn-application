@@ -51,7 +51,8 @@ class NftAuction extends Component {
             filename: files.fileList[0].name,
             base64: files.base64,
             mint: 'yes',
-            imageCID: ''
+            imageCID: '',
+            bid: 0
         });
 
     }
@@ -89,10 +90,12 @@ class NftAuction extends Component {
     }
 
     onBidButtonClick = async () => {
-        // the NFT image costs 1 ETH
-        const imagePrice = this.props.web3.utils.toWei((1).toString());
+        // convert the bid to wei and send it to the contract
+        const bid = await this.props.web3.utils.toWei(this.state.bid.toString());
+        await this.props.contractNFT.methods.placeBid()
+            .send({ from: this.props.account, value: bid });
 
-        // get the highest bidder and highest binding bid
+        // update the highest bidder and highest binding bid
         let highestBidder = await this.props.contractNFT.methods.highestBidder().call();
         let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
 
@@ -181,11 +184,10 @@ class NftAuction extends Component {
                                 Minimum price: <strong>1 ETH</strong>
                                 <br></br>
                                 <div className='token-buy-input'>
-                                    <Input labelPosition='right' type='text' placeholder='displayed above the img'>
-                                        <Label basic>Image ID</Label>
+                                    <Input labelPosition='right' type='text' placeholder='min: 1 ETH'>
+                                        <Label basic>Amout</Label>
                                         <input
-                                            value={this.state.tokens}
-                                            onChange={e => { this.setState({ id: e.target.value }) }}
+                                            onChange={e => { this.setState({ bid: e.target.value }) }}
                                         />
                                     </Input>
                                 </div>

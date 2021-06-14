@@ -47,7 +47,7 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
         // Since CIDs are based on the image content, same image will always
         // return same CID.
         require(!imageAlreadyMinted[_imageCID], "image already minted");
-        uint256 newImageId = counter++;
+        uint256 newImageId = counter;
 
         // store the image URI on the Blockchain
         images.push(_imageCID);

@@ -16,13 +16,8 @@ class NftAuction extends Component {
         base64: '',
         imageFromIPFS: '',
         imageID: '',
-        imageCID: '',
         imageCIDFromContract: '',
-        id: null,
-        auctionState: '',
-        highestBidder: '',
-        highestBindingBid: 0
-
+        id: null
     }
 
     handleFiles = async files => {
@@ -69,30 +64,15 @@ class NftAuction extends Component {
 
     onBidButtonClick = async () => {
         // the NFT image costs 1 ETH
-        const imagePrice = await this.props.web3.utils.toWei((1).toString());
+        const imagePrice = this.props.web3.utils.toWei((1).toString());
 
-        // get the auction state, the highest bidder and highest binding bid
-        let auctionState = await this.props.contractNFT.methods.auctionState().call();
-        let highestBidder = await this.props.contractNFT.methods.highestBidder().call();
-        let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
+        // get the highest bidder and highest binding bid
+        let highestBidder = this.props.contractNFT.methods.highestBidder().call();
+        let highestBindingBid = this.props.contractNFT.methods.highestBindingBid().call();
 
-        auctionState === '0' ?
-            this.setState({ auctionState: 'Started' }) :
-            auctionState === '1' ?
-                this.setState({ auctionState: 'Running' }) :
-                auctionState === '2' ?
-                    this.setState({ auctionState: 'Ended' }) :
-                    this.setState({ auctionState: 'Canceled' });
-
-        this.setState({
-            highestBidder,
-            highestBindingBid
-        })
-
-        // Bid: only binding the displayed image is avaible for now.
-        // Implementing displaying multiple images
+        // Bid
         await this.props.contractNFT.methods
-            .placeBid()
+            .buyImage(this.state.imageID)
             .send({ from: this.props.account, value: imagePrice });
 
         let newOwner = await this.props.contractNFT.methods
@@ -100,59 +80,9 @@ class NftAuction extends Component {
 
         this.setState({ owner: newOwner });
 
-    }
+        console.log("imagePrice =", imagePrice);
+        console.log("New Owner =", newOwner);
 
-    componentDidMount = async () => {
-        // get data from the Blockchain
-        let auctionState = await this.props.contractNFT.methods.auctionState().call();
-        const highestBidder = await this.props.contractNFT.methods.highestBidder().call();
-        const highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
-
-        let imageID = await this.props.contractNFT.methods
-            .imageIDs(this.state.imageCID).call();
-
-        if (imageID > 0) {
-            const imageCID = await this.props.contractNFT.methods.images(imageID).call();
-            const owner = await this.props.contractNFT.methods.ownerOf(imageID).call();
-
-            this.setState({
-                imageCID,
-                owner,
-                imageFromIPFS: await FetchFromIPFS(imageCID)
-            })
-        }
-
-        auctionState === '0' ?
-            this.setState({ auctionState: 'Started' }) :
-            auctionState === '1' ?
-                this.setState({ auctionState: 'Running' }) :
-                auctionState === '2' ?
-                    this.setState({ auctionState: 'Ended' }) :
-                    this.setState({ auctionState: 'Canceled' });
-
-        // update state variables
-        console.log("highestBidder =", highestBidder);
-        console.log("highestBindingBid =", highestBindingBid);
-        console.log("auctionState =", this.state.auctionState);
-        this.setState({
-            imageID,
-            highestBidder,
-            highestBindingBid
-        });
-    }
-
-    onAuctionEnded = async () => {
-        await this.props.contractNFT.methods.cancelAuction()
-            .send({ from: this.props.account });
-        let auctionState = await this.props.contractNFT.methods.auctionState().call();
-
-        auctionState === '0' ?
-            this.setState({ auctionState: 'Started' }) :
-            auctionState === '1' ?
-                this.setState({ auctionState: 'Running' }) :
-                auctionState === '2' ?
-                    this.setState({ auctionState: 'Ended' }) :
-                    this.setState({ auctionState: 'Canceled' });
     }
 
     render() {
@@ -160,20 +90,8 @@ class NftAuction extends Component {
             <div className="ico">
                 <div className="token-info">
                     <h1>Welcome to {this.props.imageSymbol} {this.props.imageName} Auction</h1>
-                    <h3>
-                        Auction current state:
-                        <span style={{ color: 'orange' }}> {this.state.auctionState}</span>
-                    </h3>
-                    <h3>highest bidder: {this.state.highestBidder} </h3>
-                    <h3>highest binding bid: {this.state.highestBindingBid} </h3>
-                    {
-                        this.state.auctionState === 'Running' ?
-                            <Button color='red' onClick={this.onAuctionEnded}>
-                                Cancel auction
-                    </Button> :
-                            console.log("Auction not running")
-                    }
-
+                    <h3>highest bidder: {this.props.numberOfMintedImages} </h3>
+                    <h3>highest binding bid: </h3>
                 </div>
                 <hr></hr>
 
@@ -237,17 +155,10 @@ class NftAuction extends Component {
                             <Grid.Column textAlign='center' width={8}>
                                 <h2>NFT image</h2>
                                 <br></br>
-
-                                {
-                                    this.state.imageID > 0 ?
-                                        <div>
-                                            ID: <strong>{this.state.imageID}</strong>
-                                            <br></br>
-                                    owner: <strong>{this.state.owner}</strong>
-                                            <br></br>
-                                        </div> :
-                                        console.log("no image minted")
-                                }
+                                ID: <strong>{this.state.imageID}</strong>
+                                <br></br>
+                                owner: <strong>{this.state.owner}</strong>
+                                <br></br>
                                 {
                                     this.state.imageID !== '' ?
                                         <div className='img-center'>

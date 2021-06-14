@@ -57,8 +57,6 @@ class App extends Component {
       let balanceOfOwner = await contract.methods.balanceOf(owner).call();
       balanceOfOwner = await web3.utils.fromWei(balanceOfOwner.toString());
 
-      console.log("NFT Contract in Props =", this.state.contractNFT);
-
       // Update states
       this.setState(
         {
@@ -124,9 +122,6 @@ class App extends Component {
       numberOfMintedImages: await contractNFT.methods.counter().call()
 
     });
-
-    console.log("INVESTORS =", this.state.investors);
-    console.log("INVESTORS BALANCES =", this.state.investorsBalance);
   }
 
   getAccount = async () => {
@@ -150,7 +145,6 @@ class App extends Component {
   }
 
   render() {
-    console.log("CONTRACT NFT in RENDER =", this.state.contractNFT);
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }

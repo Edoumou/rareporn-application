@@ -69,6 +69,7 @@ class BuyNFT extends Component {
     }
 
     onBuyButtonClick = async () => {
+
         // the NFT image costs 1 ETH
         const imagePrice = await this.props.web3.utils.toWei((1).toString());
 
@@ -79,8 +80,14 @@ class BuyNFT extends Component {
 
         let newOwner = await this.props.contractNFT.methods
             .ownerOf(this.state.imageID).call();
+        console.log("TYPE OF =", typeof this.state.id);
+        let imageCID = await this.props.contractNFT.methods.images(this.state.id).call();
+        console.log("IMG CIDDDD =", imageCID);
 
-        this.setState({ owner: newOwner });
+        this.setState({
+            owner: newOwner,
+            imageFromIPFS: await FetchFromIPFS(imageCID)
+        });
 
         console.log("imagePrice =", imagePrice);
         console.log("New Owner =", newOwner);
@@ -115,7 +122,7 @@ class BuyNFT extends Component {
             <div className="ico">
                 <div className="token-info">
                     <h1>Welcome to {this.props.imageSymbol} {this.props.imageName}</h1>
-                    <h3>Number of images already minted: {this.state.numberOfMintedImages} </h3>
+                    <h3>Number of images already minted: {this.props.numberOfMintedImages} </h3>
                 </div>
                 <hr></hr>
 

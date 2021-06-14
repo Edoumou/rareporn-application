@@ -27,9 +27,47 @@ The truffle react box is used to generate the Dapp structure, this is achieved b
 npx truffle unbox react
 ```
 
-Since infura is used to access the Blockchain, one needs to provide the infura API key and the account mnemonic in the configuration file. An _.env_ file is used to store both the key and the mnemonic, this file must be saved in **client/src/** directory, for the mnemonic, Ganache [[3]](https://www.trufflesuite.com/ganache) is used through Metamaskb [[4]](https://metamask.io/).
+Since infura is used to access the Blockchain, one needs to provide the infura API key and the account mnemonic in the configuration file. An _.env_ file is used to store both the key and the mnemonic, this file must be saved in **client/src/** directory, for the mnemonic, Ganache [[3]](https://www.trufflesuite.com/ganache) is used through Metamask [[4]](https://metamask.io/).
 
 ```javascript
+// .env
 REACT_APP_RINKEBY_KEY = "INFURA KEY";
 REACT_APP_MNEMONIC = "MNEMONIC";
+```
+
+Here is the simple configuration of the _truflle-config.js_ file
+
+```javascript
+// truffle-config.js
+const path = require("path");
+const HDWalletProvider = require("./client/node_modules/@truffle/hdwallet-provider");
+require("./client/node_modules/dotenv").config();
+
+const MNEMONIC = process.env.REACT_APP_MNEMONIC;
+const RINKEBY_KEY = process.env.REACT_APP_RINKEBY_KEY;
+
+module.exports = {
+  contracts_build_directory: path.join(__dirname, "client/src/contracts"),
+  networks: {
+    ganache: {
+      host: "127.0.0.1",
+      port: 7545,
+      network_id: 5777,
+    },
+    rinkeby: {
+      provider: () =>
+        new HDWalletProvider(
+          MNEMONIC,
+          `https://rinkeby.infura.io/v3/${RINKEBY_KEY}`
+        ),
+      network_id: 4,
+      gas: 4500000,
+    },
+  },
+  compilers: {
+    solc: {
+      version: "0.8.4",
+    },
+  },
+};
 ```

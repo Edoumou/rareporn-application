@@ -19,19 +19,31 @@ class NftAuction extends Component {
         imageCIDFromContract: '',
         id: null,
         highestBidder: '',
-        highestBindingBid: 0
+        highestBindingBid: 0,
+        auctionState: ''
     }
 
     componentDidMount = async () => {
         // get the highest bidder and highest binding bid
         let highestBidder = await this.props.contractNFT.methods.highestBidder().call();
         let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
+        let auctionState = await this.props.contractNFT.methods.auctionState().call();
+
+        console.log("AUCTION STATE =", auctionState);
 
         // store initial states for auction
         this.setState({
             highestBidder,
             highestBindingBid
         });
+
+        auctionState === '0' ?
+            this.setState({ auctionState: 'Started' }) :
+            auctionState === '1' ?
+                this.setState({ auctionState: 'Running' }) :
+                auctionState === '2' ?
+                    this.setState({ auctionState: 'Ended' }) :
+                    this.setState({ auctionState: 'Canceled' });
     }
 
     handleFiles = async files => {
@@ -111,8 +123,15 @@ class NftAuction extends Component {
             <div className="ico">
                 <div className="token-info">
                     <h1>Welcome to {this.props.imageSymbol} {this.props.imageName} Auction</h1>
+                    <h3>
+                        Auction state:
+                        <span style={{ color: 'orange' }}> {this.state.auctionState}</span>
+                    </h3>
                     <h3>highest bidder: {this.state.highestBidder} </h3>
                     <h3>highest binding bid: {this.state.highestBindingBid} </h3>
+                    <Button color='red'>
+                        Cancel auction
+                    </Button>
                 </div>
                 <hr></hr>
 

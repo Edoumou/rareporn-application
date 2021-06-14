@@ -156,6 +156,8 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
                 recipient.transfer(value);
             }
         }
+
+        auctionState = State.Ended;
     }
 
     function min(uint256 a, uint256 b) internal pure returns (uint256) {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactFileReader from 'react-file-reader';
 import { Grid, Button, Form, Image, Input, Label, Icon } from 'semantic-ui-react';
+import Formate from '../../utils/Formate';
 import SendToIPFS from '../../utils/SendToIPFS';
 import FetchFromIPFS from '../../utils/FetchFromIPFS';
 import "../../App.css";
@@ -25,16 +26,18 @@ class NftAuction extends Component {
 
     componentDidMount = async () => {
         // get the highest bidder and highest binding bid
-        let highestBidder = await this.props.contractNFT.methods.highestBidder().call();
-        let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
         let auctionState = await this.props.contractNFT.methods.auctionState().call();
+        let highestBidder = await this.props.contractNFT.methods.highestBidder().call();
+
+        let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
+        highestBindingBid = await this.props.web3.utils.fromWei(highestBindingBid.toString());
 
         console.log("AUCTION STATE =", auctionState);
 
         // store initial states for auction
         this.setState({
             highestBidder,
-            highestBindingBid
+            highestBindingBid: Formate(highestBindingBid)
         });
 
         auctionState === '0' ?
@@ -79,8 +82,6 @@ class NftAuction extends Component {
         // get the owner of the image from the contract
         const owner = await this.props.contractNFT.methods.ownerOf(imageID).call();
 
-        // the image from ipfs is stored in state variable imageFromIPFS
-
         this.setState({
             imageID,
             imageCID,
@@ -98,13 +99,14 @@ class NftAuction extends Component {
         // update the highest bidder and highest binding bid
         let highestBidder = await this.props.contractNFT.methods.highestBidder().call();
         let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
+        highestBindingBid = await this.props.web3.fromWei(highestBindingBid.toString());
 
         console.log("Highest Bidder =", highestBidder);
         console.log("Highest Binding bid =", highestBindingBid);
 
         this.setState({
             highestBidder,
-            highestBindingBid
+            highestBindingBid: Formate(highestBindingBid)
         });
 
     }
@@ -127,7 +129,10 @@ class NftAuction extends Component {
     }
 
     onAuctionTerminated = async () => {
-
+        // Each participant should click this button either
+        // for the refund or to get the NFT image (winner)
+        await this.props.contractNFT.methods.finalizeAuction()
+            .send({ from: this.props.account });
     }
 
     render() {

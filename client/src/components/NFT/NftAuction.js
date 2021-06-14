@@ -166,9 +166,14 @@ class NftAuction extends Component {
                     </h3>
                     <h3>highest bidder: {this.state.highestBidder} </h3>
                     <h3>highest binding bid: {this.state.highestBindingBid} </h3>
-                    <Button color='red' onClick={this.onAuctionEnded}>
-                        Cancel auction
-                    </Button>
+                    {
+                        this.state.auctionState === 'Running' ?
+                            <Button color='red' onClick={this.onAuctionEnded}>
+                                Cancel auction
+                    </Button> :
+                            console.log("Auction not running")
+                    }
+
                 </div>
                 <hr></hr>
 

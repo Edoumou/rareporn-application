@@ -17,7 +17,21 @@ class NftAuction extends Component {
         imageFromIPFS: '',
         imageID: '',
         imageCIDFromContract: '',
-        id: null
+        id: null,
+        highestBidder: '',
+        highestBindingBid: 0
+    }
+
+    componentDidMount = async () => {
+        // get the highest bidder and highest binding bid
+        let highestBidder = await this.props.contractNFT.methods.highestBidder().call();
+        let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
+
+        // store initial states for auction
+        this.setState({
+            highestBidder,
+            highestBindingBid
+        });
     }
 
     handleFiles = async files => {
@@ -67,21 +81,28 @@ class NftAuction extends Component {
         const imagePrice = this.props.web3.utils.toWei((1).toString());
 
         // get the highest bidder and highest binding bid
-        let highestBidder = this.props.contractNFT.methods.highestBidder().call();
-        let highestBindingBid = this.props.contractNFT.methods.highestBindingBid().call();
+        let highestBidder = await this.props.contractNFT.methods.highestBidder().call();
+        let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
 
+        console.log("Highest Bidder =", highestBidder);
+        console.log("Highest Binding bid =", highestBindingBid);
+
+        this.setState({
+            highestBidder,
+            highestBindingBid
+        });
         // Bid
-        await this.props.contractNFT.methods
-            .buyImage(this.state.imageID)
-            .send({ from: this.props.account, value: imagePrice });
-
-        let newOwner = await this.props.contractNFT.methods
-            .ownerOf(this.state.imageID).call();
-
-        this.setState({ owner: newOwner });
-
-        console.log("imagePrice =", imagePrice);
-        console.log("New Owner =", newOwner);
+        /*  await this.props.contractNFT.methods
+             .buyImage(this.state.imageID)
+             .send({ from: this.props.account, value: imagePrice });
+ 
+         let newOwner = await this.props.contractNFT.methods
+             .ownerOf(this.state.imageID).call();
+ 
+         this.setState({ owner: newOwner });
+ 
+         console.log("imagePrice =", imagePrice);
+         console.log("New Owner =", newOwner); */
 
     }
 
@@ -90,8 +111,8 @@ class NftAuction extends Component {
             <div className="ico">
                 <div className="token-info">
                     <h1>Welcome to {this.props.imageSymbol} {this.props.imageName} Auction</h1>
-                    <h3>highest bidder: {this.props.numberOfMintedImages} </h3>
-                    <h3>highest binding bid: </h3>
+                    <h3>highest bidder: {this.state.highestBidder} </h3>
+                    <h3>highest binding bid: {this.state.highestBindingBid} </h3>
                 </div>
                 <hr></hr>
 

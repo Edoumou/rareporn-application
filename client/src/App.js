@@ -8,6 +8,8 @@ import Home from "../src/components/Home";
 import 'semantic-ui-css/semantic.min.css'
 import "./App.css";
 
+require('dotenv').config();
+
 class App extends Component {
   state = {
     web3: null,

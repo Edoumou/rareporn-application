@@ -1,4 +1,13 @@
 const path = require("path");
+const HDWalletProvider = require('./client/node_modules/@truffle/hdwallet-provider');
+require('./client/node_modules/dotenv').config();
+
+const MNEMONIC = process.env.REACT_APP_MNEMONIC;
+const RINKEBY_KEY = process.env.REACT_APP_RINKEBY_KEY;
+
+
+console.log("MNEMONIC =", MNEMONIC);
+console.log("RINKEBY_KEY =", RINKEBY_KEY);
 
 module.exports = {
   contracts_build_directory: path.join(__dirname, "client/src/contracts"),
@@ -9,9 +18,9 @@ module.exports = {
       network_id: 5777
     },
     rinkeby: {
-      host: "127.0.0.1",
-      port: 7545,
-      network_id: 4
+      provider: () => new HDWalletProvider(MNEMONIC, `https://rinkeby.infura.io/v3/${RINKEBY_KEY}`),
+      network_id: 4,        // Rinkeby's id
+      gas: 4500000,        // Rinkeby has a lower block limit than mainnet
     }
   },
   compilers: {

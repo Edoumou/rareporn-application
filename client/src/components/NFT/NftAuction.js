@@ -128,10 +128,16 @@ class NftAuction extends Component {
                         <span style={{ color: 'orange' }}> {this.state.auctionState}</span>
                     </h3>
                     <h3>highest bidder: {this.state.highestBidder} </h3>
-                    <h3>highest binding bid: {this.state.highestBindingBid} </h3>
-                    <Button color='red'>
-                        Cancel auction
+                    <h3 className="pad-bott">highest binding bid: {this.state.highestBindingBid} </h3>
+                    <span className='two-btn'>
+                        <Button color='red'>
+                            Cancel auction
+                        </Button>
+                    </span>
+                    <Button color='blue'>
+                        Terminate auction
                     </Button>
+
                 </div>
                 <hr></hr>
 

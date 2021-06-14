@@ -26,3 +26,10 @@ The truffle react box is used to generate the Dapp structure, this is achieved b
 ```javascript
 npx truffle unbox react
 ```
+
+Since infura is used to access the Blockchain, one needs to provide the infura API key and the account mnemonic in the configuration file. An _.env_ file is used to store both the key and the mnemonic, this file must be saved in **client/src/** directory
+
+```javascript
+REACT_APP_RINKEBY_KEY = "INFURA KEY";
+REACT_APP_MNEMONIC = "MNEMONIC";
+```

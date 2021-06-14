@@ -8,6 +8,7 @@ The RPT token is used for an ICO, i.e. one can invest in the project by buying t
 
 ```javascript
 // ICO is the name of the ERC20 token contract
+
 var ICO = artifacts.require("./ICO.sol");
 
 module.exports = function (deployer) {
@@ -31,6 +32,7 @@ Since infura is used to access the Blockchain, one needs to provide the infura A
 
 ```javascript
 // .env
+
 REACT_APP_RINKEBY_KEY = "INFURA KEY";
 REACT_APP_MNEMONIC = "MNEMONIC";
 ```
@@ -39,6 +41,7 @@ Here is the simple configuration of the _truflle-config.js_ file
 
 ```javascript
 // truffle-config.js
+
 const path = require("path");
 const HDWalletProvider = require("./client/node_modules/@truffle/hdwallet-provider");
 require("./client/node_modules/dotenv").config();

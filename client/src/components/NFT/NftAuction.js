@@ -130,8 +130,8 @@ class NftAuction extends Component {
 
     onAuctionTerminated = async () => {
         // Each participant should click this button either
-        // for the refund or to get the NFT image (winner)
-        await this.props.contractNFT.methods.finalizeAuction()
+        //for the refund or to get the NFT image(winner)
+        await this.props.contractNFT.methods.finalizeAuction(this.state.id)
             .send({ from: this.props.account });
 
         // update the auction's state
@@ -157,15 +157,18 @@ class NftAuction extends Component {
                     </h3>
                     <h3>highest bidder: {this.state.highestBidder} </h3>
                     <h3 className="pad-bott">highest binding bid: {this.state.highestBindingBid} </h3>
-                    <span className='two-btn'>
-                        <Button color='red' onClick={this.onAuctionCanceled}>
-                            Cancel auction
-                        </Button>
+                    <Button color='red' onClick={this.onAuctionCanceled}>
+                        Cancel auction
+                    </Button>
+                    <br></br>
+                    <br></br>
+                    <span className='input-btn'>
+                        <Input placeholder='Image ID' onChange={e => { this.setState({ id: e.target.value }) }}>
+                        </Input>
                     </span>
                     <Button color='blue' onClick={this.onAuctionTerminated}>
                         Terminate auction
                     </Button>
-
                 </div>
                 <hr></hr>
 

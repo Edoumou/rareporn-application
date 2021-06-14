@@ -67,10 +67,11 @@
   justify-content: center;
 }
 
-.two-btn {
-  padding-right: 30px;
+.input-btn {
+  padding-right: 10px;
+  padding-top: 30px;
 }
 
 .pad-bott {
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }

@@ -106,18 +106,27 @@ class NftAuction extends Component {
             highestBidder,
             highestBindingBid
         });
-        // Bid
-        /*  await this.props.contractNFT.methods
-             .buyImage(this.state.imageID)
-             .send({ from: this.props.account, value: imagePrice });
- 
-         let newOwner = await this.props.contractNFT.methods
-             .ownerOf(this.state.imageID).call();
- 
-         this.setState({ owner: newOwner });
- 
-         console.log("imagePrice =", imagePrice);
-         console.log("New Owner =", newOwner); */
+
+    }
+
+    onAuctionCanceled = async () => {
+        // Only the owner can cancel the auction (requires in the contract)
+        await this.props.contractNFT.methods.cancelAuction()
+            .send({ from: this.props.account });
+
+        // update the auction's state
+        let auctionState = await this.props.contractNFT.methods.auctionState().call();
+
+        auctionState === '0' ?
+            this.setState({ auctionState: 'Started' }) :
+            auctionState === '1' ?
+                this.setState({ auctionState: 'Running' }) :
+                auctionState === '2' ?
+                    this.setState({ auctionState: 'Ended' }) :
+                    this.setState({ auctionState: 'Canceled' });
+    }
+
+    onAuctionTerminated = async () => {
 
     }
 
@@ -133,11 +142,11 @@ class NftAuction extends Component {
                     <h3>highest bidder: {this.state.highestBidder} </h3>
                     <h3 className="pad-bott">highest binding bid: {this.state.highestBindingBid} </h3>
                     <span className='two-btn'>
-                        <Button color='red'>
+                        <Button color='red' onClick={this.onAuctionCanceled}>
                             Cancel auction
                         </Button>
                     </span>
-                    <Button color='blue'>
+                    <Button color='blue' onClick={this.onAuctionTerminated}>
                         Terminate auction
                     </Button>
 

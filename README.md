@@ -74,3 +74,5 @@ module.exports = {
   },
 };
 ```
+
+![alt text](https://github.com/Edoumou/rareporn-application/blob/main/client/src/img/scr1.png "screeshot")

@@ -18,3 +18,11 @@ module.exports = function (deployer) {
 ## ERC721 Token (NFT) - RPNFT
 
 The ERC721 token is used to mint images that are sold on the Dapp either at a fixe price or on auction. In order to be sure not to mint the same image several times, they are store on IPFS [[1]](https://ipfs.io/) that provides in return a unique identifier called CID (content identifier). CID describe data not buy its location but but its content, this means the same content always results to the same CID, therefore if images are stored on Ethereum Blockchain through the CIDs, they cannot be duplicated, i.e. the same image cannot be minted twice. Notice that this ipfs proprety is also povided buy the ERC721, therefore, even if the image is not stored on IPFS, it would be unique if it hzs been vreated following this standard.
+
+## Configuration file
+
+The truffle react box is used to generate the Dapp structure, this is achieved buy running the command [[2]](https://www.trufflesuite.com/boxes/react) (the name of the project is set to the name of the working directory)
+
+```javascript
+npx truffle unbox react
+```

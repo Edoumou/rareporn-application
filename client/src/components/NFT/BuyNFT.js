@@ -16,6 +16,8 @@ class BuyNFT extends Component {
         base64: '',
         imageFromIPFS: '',
         imageID: '',
+        imageCID: '',
+        numberOfMintedImages: this.props.numberOfMintedImages,
         imageCIDFromContract: '',
         id: null
     }
@@ -52,25 +54,23 @@ class BuyNFT extends Component {
         // get the owner of the image from the contract
         const owner = await this.props.contractNFT.methods.ownerOf(imageID).call();
 
+        // get the number of minted images
+        let numberOfMintedImages = await this.props.contractNFT.methods.counter().call()
+
         // the image from ipfs is stored in state variable imageFromIPFS
 
         this.setState({
             imageID,
             imageCID,
             owner,
+            numberOfMintedImages: numberOfMintedImages,
             imageFromIPFS: await FetchFromIPFS(imageCID)
         });
-
-        console.log("image ID", this.state.imageID);
-        console.log("Image CID =", this.state.imageCID);
-        console.log("Image owner =", this.state.owner);
-        console.log("Image IPFS =", this.state.imageFromIPFS);
-
     }
 
     onBuyButtonClick = async () => {
         // the NFT image costs 1 ETH
-        const imagePrice = this.props.web3.utils.toWei((1).toString());
+        const imagePrice = await this.props.web3.utils.toWei((1).toString());
 
         // Buy the NFT image
         await this.props.contractNFT.methods
@@ -87,12 +87,35 @@ class BuyNFT extends Component {
 
     }
 
+    componentDidMount = async () => {
+        // get data from the Blockchain
+        if (this.state.imageCID !== '') {
+            let imageID = await this.props.contractNFT.methods
+                .imageIDs(this.state.imageCID).call();
+            let imageCID = await this.props.contractNFT.methods.images(imageID).call();
+
+            const owner = await this.props.contractNFT.methods.ownerOf(imageID).call();
+
+            // update state variables
+
+            this.setState({
+                imageID,
+                imageCID,
+                owner,
+                imageFromIPFS: await FetchFromIPFS(imageCID),
+            });
+        }
+
+        this.setState({ numberOfMintedImages: this.props.numberOfMintedImages });
+
+    }
+
     render() {
         return (
             <div className="ico">
                 <div className="token-info">
-                    <h1>Welcome to {this.props.imageSymbol} {this.props.imageName} Marketplace</h1>
-                    <h3>Number of images already minted: {this.props.numberOfMintedImages} </h3>
+                    <h1>Welcome to {this.props.imageSymbol} {this.props.imageName}</h1>
+                    <h3>Number of images already minted: {this.state.numberOfMintedImages} </h3>
                 </div>
                 <hr></hr>
 
@@ -121,7 +144,9 @@ class BuyNFT extends Component {
 
                                         {
                                             this.state.mint !== '' ?
-                                                <Button primary onClick={this.onButtonClick}>Mint</Button> :
+                                                <Button primary onClick={this.onButtonClick}>
+                                                    Mint
+                                                </Button> :
                                                 console.log('Waiting for file upload')
                                         }
 
@@ -173,14 +198,6 @@ class BuyNFT extends Component {
                         </Grid.Row>
                     </Grid>
                 </div>
-
-
-
-
-
-
-
-
             </div>
         );
     }

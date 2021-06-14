@@ -75,4 +75,8 @@ module.exports = {
 };
 ```
 
+## Some results
+
+I this section are displayed screenshots of the Daap to show how it works.
+
 ![alt text](https://github.com/Edoumou/rareporn-application/blob/main/client/src/img/scr1.png "screeshot")

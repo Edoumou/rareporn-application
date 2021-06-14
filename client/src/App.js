@@ -36,11 +36,11 @@ class App extends Component {
 
       //== ERC20 token contract
       const contract = await getICOContract(web3);
-      console.log('CONTRACT =', contract);
+      console.log('ERC20 CONTRACT =', contract);
 
       //== ERC721 token contract
       const contractNFT = await getNFTContract(web3);
-      console.log('NFT CONTRACT =', this.state.contractNFT);
+      console.log('ERC721 CONTRACT =', this.state.contractNFT);
 
       const accounts = await web3.eth.getAccounts();
 

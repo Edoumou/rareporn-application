@@ -101,9 +101,6 @@ class NftAuction extends Component {
         let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
         highestBindingBid = await this.props.web3.utils.fromWei(highestBindingBid.toString());
 
-        console.log("Highest Bidder =", highestBidder);
-        console.log("Highest Binding bid =", highestBindingBid);
-
         this.setState({
             highestBidder,
             highestBindingBid: Formate(highestBindingBid)

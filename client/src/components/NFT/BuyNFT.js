@@ -80,18 +80,12 @@ class BuyNFT extends Component {
 
         let newOwner = await this.props.contractNFT.methods
             .ownerOf(this.state.imageID).call();
-        console.log("TYPE OF =", typeof this.state.id);
         let imageCID = await this.props.contractNFT.methods.images(this.state.id).call();
-        console.log("IMG CIDDDD =", imageCID);
 
         this.setState({
             owner: newOwner,
             imageFromIPFS: await FetchFromIPFS(imageCID)
         });
-
-        console.log("imagePrice =", imagePrice);
-        console.log("New Owner =", newOwner);
-
     }
 
     componentDidMount = async () => {

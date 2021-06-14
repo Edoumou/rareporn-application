@@ -2,6 +2,10 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "engine": {
+    "node": "16.0.0",
+    "npm": "7.10.0"
+  },
   "dependencies": {
     "@openzeppelin/contracts": "^4.1.0",
     "@truffle/hdwallet-provider": "^1.4.0",

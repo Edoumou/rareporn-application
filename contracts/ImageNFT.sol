@@ -32,8 +32,7 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
         // Define stating and ending time to prevent the owner to chose when
         // he should end the auction.
         // using block number is safer than using block.timestamp since miners
-        // can change the later. we suppose the auction will last 2 minutes.
-        // endBlock = startBlock + (2 * 60)/15
+        // can change the later. Auction can be finalized only after endBlock
 
         startBlock = block.number;
         endBlock = startBlock + 8;

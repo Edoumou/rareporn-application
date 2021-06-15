@@ -41,12 +41,8 @@ class NftAuction extends Component {
         });
 
         auctionState === '0' ?
-            this.setState({ auctionState: 'Started' }) :
-            auctionState === '1' ?
-                this.setState({ auctionState: 'Running' }) :
-                auctionState === '2' ?
-                    this.setState({ auctionState: 'Ended' }) :
-                    this.setState({ auctionState: 'Canceled' });
+            this.setState({ auctionState: 'Running' }) :
+            this.setState({ auctionState: 'Ended' });
     }
 
     handleFiles = async files => {
@@ -93,7 +89,8 @@ class NftAuction extends Component {
     onBidButtonClick = async () => {
         // convert the bid to wei and send it to the contract
         const bid = await this.props.web3.utils.toWei(this.state.bid.toString());
-        console.log("BID =", this.state.bid);
+        console.log("BID =", bid);
+        console.log("THIS ACCOUNT =", this.props.account);
 
         await this.props.contractNFT.methods.placeBid()
             .send({ from: this.props.account, value: bid });
@@ -103,32 +100,24 @@ class NftAuction extends Component {
         let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
         highestBindingBid = await this.props.web3.utils.fromWei(highestBindingBid.toString());
 
-        // get the new owner of the image from the contract and set it to state variable
-        const owner = await this.props.contractNFT.methods.ownerOf(this.state.id).call();
-
         this.setState({
-            owner,
             highestBidder,
             highestBindingBid: Formate(highestBindingBid)
         });
 
     }
 
-    onAuctionCanceled = async () => {
+    onAuctionEnded = async () => {
         // Only the owner can cancel the auction (requires in the contract)
-        await this.props.contractNFT.methods.cancelAuction()
+        await this.props.contractNFT.methods.endAuction()
             .send({ from: this.props.account });
 
         // update the auction's state
         let auctionState = await this.props.contractNFT.methods.auctionState().call();
 
         auctionState === '0' ?
-            this.setState({ auctionState: 'Started' }) :
-            auctionState === '1' ?
-                this.setState({ auctionState: 'Running' }) :
-                auctionState === '2' ?
-                    this.setState({ auctionState: 'Ended' }) :
-                    this.setState({ auctionState: 'Canceled' });
+            this.setState({ auctionState: 'Running' }) :
+            this.setState({ auctionState: 'Ended' });
     }
 
     onAuctionTerminated = async () => {
@@ -141,12 +130,12 @@ class NftAuction extends Component {
         let auctionState = await this.props.contractNFT.methods.auctionState().call();
 
         auctionState === '0' ?
-            this.setState({ auctionState: 'Started' }) :
-            auctionState === '1' ?
-                this.setState({ auctionState: 'Running' }) :
-                auctionState === '2' ?
-                    this.setState({ auctionState: 'Ended' }) :
-                    this.setState({ auctionState: 'Canceled' });
+            this.setState({ auctionState: 'Running' }) :
+            this.setState({ auctionState: 'Ended' });
+
+        // get the new owner of the image from the contract and set it to state variable
+        const owner = await this.props.contractNFT.methods.ownerOf(this.state.id).call();
+        this.setState({ owner });
     }
 
     render() {
@@ -160,8 +149,8 @@ class NftAuction extends Component {
                     </h3>
                     <h3>highest bidder: {this.state.highestBidder} </h3>
                     <h3 className="pad-bott">highest binding bid: {this.state.highestBindingBid} </h3>
-                    <Button color='red' onClick={this.onAuctionCanceled}>
-                        Cancel auction
+                    <Button color='red' onClick={this.onAuctionEnded}>
+                        End auction
                     </Button>
                     <br></br>
                     <br></br>
@@ -170,7 +159,7 @@ class NftAuction extends Component {
                         </Input>
                     </span>
                     <Button color='blue' onClick={this.onAuctionTerminated}>
-                        Terminate auction
+                        claim the NFT or refund
                     </Button>
                 </div>
                 <hr></hr>
@@ -212,11 +201,8 @@ class NftAuction extends Component {
                             <Grid.Column textAlign='center' width={4}>
                                 <h2>Your bid</h2>
                                 <br></br>
-                                <Input placeholder='Image ID' onChange={e => { this.setState({ id: e.target.value }) }}>
-                                </Input>
                                 <br></br>
-                                <br></br>
-                                Minimum price: <strong>1 ETH</strong>
+                                Minimum price: <strong>0.1 ETH</strong>
                                 <br></br>
                                 <div className='token-buy-input'>
                                     <Input labelPosition='right' type='text' placeholder='min: 1 ETH'>

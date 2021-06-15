@@ -7,8 +7,6 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
     string[] public images;
 
     uint256 public counter;
-    uint256 public startBlock;
-    uint256 public endBlock;
     uint256 public ipfsHash;
     uint256 bidIncrement;
     uint256 public highestBindingBid;
@@ -16,7 +14,7 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
     address payable public owner;
     address payable public highestBidder;
 
-    enum State {Started, Running, Ended, Canceled}
+    enum State {Running, Ended}
     State public auctionState;
 
     mapping(address => uint256) public bids;
@@ -26,17 +24,9 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
     //====
 
     constructor() {
-        // Initialize the bid incrment to 0.5 ETH
-        bidIncrement = 100000000000000000;
+        // Initialize the bid incrment to 0.01 ETH
+        bidIncrement = 10000000000000000;
         highestBindingBid = 0;
-
-        // Define stating and ending time to prevent the owner to chose when
-        // he should end the auction.
-        // using block number is safer than using block.timestamp since miners
-        // can change the later. Auction can be finalized only after endBlock
-
-        startBlock = block.number;
-        endBlock = startBlock + 8;
 
         // The auction starts when the contract is deployed
         auctionState = State.Running;
@@ -94,16 +84,16 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
     }
 
     //=== Auction
-    function placeBid() public payable afterStart beforeEnd {
+    function placeBid() public payable {
         require(msg.sender != owner, "You're Owner");
         require(auctionState == State.Running);
-        require(msg.value >= 1 ether, "min: 1 ETH");
+        require(msg.value >= 0.09 ether, "min: 1 ETH");
 
         uint256 currentBid = bids[msg.sender] + msg.value;
         require(currentBid > highestBindingBid);
         bids[msg.sender] = currentBid;
 
-        if (currentBid < bids[highestBidder]) {
+        if (currentBid <= bids[highestBidder]) {
             highestBindingBid = min(
                 currentBid + bidIncrement,
                 bids[highestBidder]
@@ -117,11 +107,11 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
         }
     }
 
-    function cancelAuction() public {
+    function endAuction() public {
         require(msg.sender == owner, "Not Owner");
         require(auctionState == State.Running);
 
-        auctionState = State.Canceled;
+        auctionState = State.Ended;
     }
 
     // Withdrawal pattern to avoid re-entrance attacks
@@ -129,38 +119,29 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
     function finalizeAuction(uint256 _imageID) public {
         // Auction need to be cancelled or ended.
         // only the owner or a bidder can finalize the auction
-        require(auctionState == State.Canceled || block.number > endBlock);
+        require(auctionState == State.Ended);
         require(msg.sender != owner && bids[msg.sender] > 0);
 
         address payable recipient;
         uint256 value;
 
-        // treat both auction cancelled or ended
-        if (auctionState == State.Canceled) {
+        // if the caller is the winner, transfer the NFT image
+        // if not refund
+        if (msg.sender == highestBidder) {
+            recipient = highestBidder;
+            value = bids[highestBidder] - highestBindingBid;
+
+            // send the amount of ETH to the owner
+            owner.transfer(value);
+
+            // transfer the NFT image to the highestBidder
+            _safeTransfer(owner, recipient, _imageID, "Enjoy!");
+        } else {
             recipient = payable(msg.sender);
             value = bids[msg.sender];
 
             recipient.transfer(value);
-        } else {
-            // if the owner makes the call, else if a bidder makes it.
-            if (msg.sender == highestBidder) {
-                recipient = highestBidder;
-                value = bids[highestBidder] - highestBindingBid;
-
-                // send the amount of ETH to the owner
-                owner.transfer(value);
-
-                // transfer the NFT image to the highestBidder
-                _safeTransfer(owner, recipient, _imageID, "Enjoy!");
-            } else {
-                recipient = payable(msg.sender);
-                value = bids[msg.sender];
-
-                recipient.transfer(value);
-            }
         }
-
-        auctionState = State.Ended;
     }
 
     function min(uint256 a, uint256 b) internal pure returns (uint256) {
@@ -169,15 +150,5 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
         } else {
             return b;
         }
-    }
-
-    modifier afterStart() {
-        require(block.number >= startBlock);
-        _;
-    }
-
-    modifier beforeEnd() {
-        require(block.number <= endBlock);
-        _;
     }
 }

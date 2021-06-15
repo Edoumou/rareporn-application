@@ -27,7 +27,8 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
 
     constructor() {
         // Initialize the bid incrment to 0.5 ETH
-        bidIncrement = 500000000000000000;
+        bidIncrement = 100000000000000000;
+        highestBindingBid = 0;
 
         // Define stating and ending time to prevent the owner to chose when
         // he should end the auction.

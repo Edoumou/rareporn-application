@@ -93,6 +93,8 @@ class NftAuction extends Component {
     onBidButtonClick = async () => {
         // convert the bid to wei and send it to the contract
         const bid = await this.props.web3.utils.toWei(this.state.bid.toString());
+        console.log("BID =", this.state.bid);
+
         await this.props.contractNFT.methods.placeBid()
             .send({ from: this.props.account, value: bid });
 
@@ -101,7 +103,11 @@ class NftAuction extends Component {
         let highestBindingBid = await this.props.contractNFT.methods.highestBindingBid().call();
         highestBindingBid = await this.props.web3.utils.fromWei(highestBindingBid.toString());
 
+        // get the new owner of the image from the contract and set it to state variable
+        const owner = await this.props.contractNFT.methods.ownerOf(this.state.id).call();
+
         this.setState({
+            owner,
             highestBidder,
             highestBindingBid: Formate(highestBindingBid)
         });
@@ -205,6 +211,10 @@ class NftAuction extends Component {
                             </Grid.Column>
                             <Grid.Column textAlign='center' width={4}>
                                 <h2>Your bid</h2>
+                                <br></br>
+                                <Input placeholder='Image ID' onChange={e => { this.setState({ id: e.target.value }) }}>
+                                </Input>
+                                <br></br>
                                 <br></br>
                                 Minimum price: <strong>1 ETH</strong>
                                 <br></br>

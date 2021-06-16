@@ -49,9 +49,10 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
         // store the information that the image has been minted
         imageAlreadyMinted[_imageCID] = true;
 
-        // store the image ID of the image CID in a mapping
+        // store the image ID of the image in a mapping
         imageIDs[_imageCID] = newImageId;
 
+        // transfer the ownership of the image
         owner = payable(ownerOf(newImageId));
 
         counter++;
@@ -59,7 +60,7 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
 
     function buyImage(uint256 _imageID) public payable returns (bool) {
         // ERC721 contract defines requires needed
-        // Double checking would not be optimal since it cost gas
+        // Double checking would not be optimal since it costs gas
 
         // get the owner of the image. Always work with local variable
         // not state variable.
@@ -79,7 +80,6 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
         require(msg.value == 1 ether, "ImageNFT: pay 1 ETH");
         _safeTransfer(ownerAddress, msg.sender, _imageID, "Enjoy!");
 
-        // creturn the address of the new image's owner
         return true;
     }
 
@@ -115,7 +115,7 @@ contract ImageNFT is ERC721("NFT Marketplace", "RPNFT") {
     }
 
     // Withdrawal pattern to avoid re-entrance attacks
-    // refund the losser and transfer the image to the highestBidder
+    // refund the looser and transfer the image to the highestBidder
     function finalizeAuction(uint256 _imageID) public {
         // Auction need to be cancelled or ended.
         // only the owner or a bidder can finalize the auction

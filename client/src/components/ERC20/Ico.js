@@ -104,7 +104,7 @@ class Ico extends Component {
                                 <br></br>
                                 {this.props.balanceETH} ETH
                                 <br></br>
-                                {this.state.balanceRPT} RPT
+                                {Formate(this.state.balanceRPT)} RPT
                             </Grid.Column>
                             <Grid.Column textAlign='center' width={5}>
                                 <h2>Buy tokens</h2>

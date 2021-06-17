@@ -4,7 +4,6 @@ import "../App.css";
 
 class Home extends Component {
     render() {
-        console.log("CONTRACT NFT in Home =", this.props.contractNFT);
         return (
             <div className='home'>
                 <Header

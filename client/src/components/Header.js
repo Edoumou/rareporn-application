@@ -9,7 +9,7 @@ import '../App.css'
 
 class Header extends Component {
     state = {
-        activeItem: 'Buy RPT tokens',
+        activeItem: 'Buy RPT tokens'
     }
     handleItemClick = (e, { name }) => this.setState({ activeItem: name, color: 'orange' });
 
@@ -85,6 +85,16 @@ class Header extends Component {
                                 imageSymbol={this.props.imageSymbol}
                                 numberOfMintedImages={this.props.numberOfMintedImages}
                             />
+                        </Route>
+                        <Route path='/'>
+                            <div className='home-page'>
+                                <h1>Welcome to the ERC20 and ERC721 tokens platform</h1>
+                                <h2>
+                                    You can participate to the ICO or buy our beatufil NFT images
+                                    <br></br>
+                                    either at a fixed price or by participating on auction
+                                </h2>
+                            </div>
                         </Route>
                     </Switch>
                 </BrowserRouter>

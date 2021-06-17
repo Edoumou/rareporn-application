@@ -90,7 +90,7 @@ class Header extends Component {
                             <div className='home-page'>
                                 <h1>Welcome to the ERC20 and ERC721 tokens platform</h1>
                                 <h2>
-                                    You can participate to ICOs or mint and/or buy our beatufil NFT images
+                                    You can participate to ICOs and mint and/or buy our beatufil NFT images
                                     <br></br>
                                     either at a fixed price or by participating on auction
                                 </h2>

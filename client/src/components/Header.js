@@ -92,7 +92,7 @@ class Header extends Component {
                                 <h2>
                                     You can participate to ICOs and mint and/or buy beatufil NFT images
                                     <br></br>
-                                    either at a fixed price or by participating on auction
+                                    either at a fixed price or by participating in auction
                                 </h2>
                             </div>
                         </Route>

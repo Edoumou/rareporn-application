@@ -18,7 +18,7 @@ module.exports = function (deployer) {
 
 ## ERC721 Token (NFT) - RPNFT
 
-The ERC721 token is used to mint images that are sold on the Dapp either at a fixed price or on auction. In order to be sure not to mint the same image several times, they are store on IPFS [[1]](https://ipfs.io/) that provides in return a unique identifier called CID (content identifier). CID describe data not buy its location but by its content, this means the same content always results to the same CID, therefore if images are stored on Ethereum Blockchain through the CIDs, they cannot be duplicated, i.e. the same image cannot be minted twice. Notice that this ipfs proprety is also povided by the ERC721, therefore, even if the image is not stored on IPFS, it would be unique in case it has been created following this standard.
+The ERC721 token is used to mint images that are sold on the Dapp either at a fixed price or in auction. In order to be sure not to mint the same image several times, they are store on IPFS [[1]](https://ipfs.io/) that provides in return a unique identifier called CID (content identifier). CIDs describe data not by its location but by its content, this means the same content always results to the same CID, therefore if images are stored on the Ethereum Blockchain through the CIDs, they cannot be duplicated, i.e. the same image cannot be minted twice. Notice that this ipfs proprety is also povided by the ERC721, therefore, even if the image is not stored on IPFS, it would be unique in case it has been created following this standard.
 
 ## Configuration file
 

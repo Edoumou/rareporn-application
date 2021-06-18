@@ -55,7 +55,7 @@ class BuyNFT extends Component {
         const owner = await this.props.contractNFT.methods.ownerOf(imageID).call();
 
         // get the number of minted images
-        let numberOfMintedImages = await this.props.contractNFT.methods.counter().call()
+        let numberOfMintedImages = await this.props.contractNFT.methods.counter().call();
 
         // the image from ipfs is stored in state variable imageFromIPFS
 
@@ -96,6 +96,7 @@ class BuyNFT extends Component {
             let imageCID = await this.props.contractNFT.methods.images(imageID).call();
 
             const owner = await this.props.contractNFT.methods.ownerOf(imageID).call();
+            let numberOfMintedImages = await this.props.contractNFT.methods.counter().call();
 
             // update state variables
 
@@ -104,10 +105,9 @@ class BuyNFT extends Component {
                 imageCID,
                 owner,
                 imageFromIPFS: await FetchFromIPFS(imageCID),
+                numberOfMintedImages: numberOfMintedImages
             });
         }
-
-        this.setState({ numberOfMintedImages: this.props.numberOfMintedImages });
 
     }
 
@@ -116,7 +116,7 @@ class BuyNFT extends Component {
             <div className="ico">
                 <div className="token-info">
                     <h1>Welcome to {this.props.imageSymbol} {this.props.imageName}</h1>
-                    <h3>Number of images already minted: {this.props.numberOfMintedImages} </h3>
+                    <h3>Number of images already minted: {this.state.numberOfMintedImages} </h3>
                 </div>
                 <hr></hr>
 
